@@ -10,6 +10,7 @@ import {
 } from '@chakra-ui/react'
 import type { NextPage } from 'next'
 import { Layout } from '../layout'
+import { ConnectWallet } from '../components/ConnectWallet'
 
 const Home: NextPage = () => {
   return (
@@ -17,12 +18,7 @@ const Home: NextPage = () => {
       <Flex>
         <Heading color='base.dark'>JP Lottery</Heading>
         <Spacer />
-        <Button
-          colorScheme='pink'
-          // onClick={connectWalletHandler}
-        >
-          Connect Wallet
-        </Button>
+        <ConnectWallet />
       </Flex>
       <Grid h='200px' templateColumns='repeat(3, 1fr)' gap={4} py={12}>
         <GridItem colSpan={2}>
