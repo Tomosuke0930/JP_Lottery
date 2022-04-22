@@ -22,7 +22,7 @@ export const ConnectWallet = () => {
   return (
     <div>
       {/* <div>ChainId: {chainId}</div> */}
-      {chainId == 4 && <>Rinkeby</>}
+      {chainId != 4 && <>Change Network to Rinkeby</>}
       {/* <div>Account: {account}</div> */}
       {active ? (
         <Button disabled variant='outline' colorScheme='pink'>
