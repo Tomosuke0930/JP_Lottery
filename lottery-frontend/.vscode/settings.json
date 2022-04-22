@@ -1,0 +1,18 @@
+{
+  // ファイルを非表示にする
+  "files.exclude": {
+    // "electron-src": true,
+    "main": true,
+    "node_modules": true,
+    "src/next-env.d.ts": true,
+    "src/.next": true,
+    "src/out": true,
+    "src/tsconfig.json": true,
+    ".editorconfig": true,
+    ".gitignore": true,
+    ".prettierrc": true,
+    "yarn.lock": true
+  },
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode"
+}
