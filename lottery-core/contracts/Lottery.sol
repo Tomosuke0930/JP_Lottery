@@ -33,7 +33,6 @@ contract Lottery {
 
   constructor() {
     jp_bank = msg.sender;
-    lotteryId = 1;
   }
 
   // get user info of winner in the lottery
