@@ -12,7 +12,7 @@ contract Lottery {
 
   // Lot Structs
   struct LotChance {
-    address userAddress;
+    address payable userAddress;
     uint256 ids;
   }
   LotChance[] public lotChances;
@@ -33,7 +33,6 @@ contract Lottery {
 
   constructor() {
     jp_bank = msg.sender;
-    lotteryId = 1;
   }
 
   // get user info of winner in the lottery
@@ -85,6 +84,9 @@ contract Lottery {
   }
 
   // this is test
+  function greet() public pure returns (string memory) {
+    return "HelloWolrd";
+  }
 
   function Keccahappyoooooo() public onlyOwner {
     require(lotChances.length > 9, "Lack of participants...");
@@ -97,6 +99,12 @@ contract Lottery {
     lotteryId++;
 
     // players = new address payable[](0);
+
+    // address payable[] public players;
+    // LotChance[] public lotChances;
+
+    // lotChances = new LotChance[](0);
+    // dynamic arrayはあかん！
   }
 
   function getLuckyPerson(uint256 lotteryIds)
