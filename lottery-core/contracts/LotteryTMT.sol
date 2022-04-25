@@ -1,7 +1,9 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.13;
 
-contract Lottery {
+import "hardhat/console.sol";
+
+contract LotteryTMT {
   // Lot Info
   uint256 public constant FIRSTPrizeRatio = 33;
   uint256 public constant FIRSTNumber = 1;
@@ -12,28 +14,31 @@ contract Lottery {
 
   // Lot Structs
   struct LotChance {
-    address userAddress;
+    address payable userAddress;
     uint256 ids;
   }
+
+  // i have to create lottery struct >> first buyer, and PRICE...
+  // lotchances.length == 0 , >> add 1 !!!
+
   LotChance[] public lotChances;
   uint256 public randomNumber;
   address payable luckyPerson;
   uint256[] public lotNumbers;
 
   // Lot Join Fee
-  uint256 public constant PRICE = 0.001 ether;
+  uint256 public constant PRICE = 1;
 
   // Other Vars
   address public jp_bank;
   address payable[] public players;
-  uint256 public lotteryId;
+  uint256 public lotteryId = 1;
   uint256 public purchasedLotNumber;
 
   mapping(uint256 => address payable) public lotteryHistory;
 
   constructor() {
     jp_bank = msg.sender;
-    lotteryId = 1;
   }
 
   // get user info of winner in the lottery
@@ -53,16 +58,6 @@ contract Lottery {
     return players;
   }
 
-  // User have to buy more than two
-  function enter(uint256 buyNumber) public payable {
-    require(buyNumber > 1, "<<<<<<Buy more than 1>>>>>>");
-    require(msg.value > buyNumber * PRICE);
-    for (uint256 i = 0; i < buyNumber; i++) {
-      lotChances.push(LotChance(payable(msg.sender), purchasedLotNumber));
-      purchasedLotNumber++;
-    }
-  }
-
   function getUser(uint256 ids) internal {
     luckyPerson = payable(lotChances[ids].userAddress);
   }
@@ -73,6 +68,12 @@ contract Lottery {
         keccak256(abi.encodePacked(block.difficulty, block.timestamp, i))
       ) %
       lotChances.length;
+    if (randomNumber == 0) {
+      // if get 0, user has all 0, so it is difficult ....
+      // if, this user is first buyer, you have to push more 1 lottery
+      getRandomNumber(i);
+    }
+    console.log("RandomNumber is === ", randomNumber);
   }
 
   function getPurchasedNumber() public view returns (uint256[] memory l) {
@@ -85,8 +86,25 @@ contract Lottery {
   }
 
   // this is test
-  function greet() public pure returns (string memory) {
-    return "HelloWolrd";
+
+  function getLotChancesLength() public view returns (uint256) {
+    return lotChances.length;
+  }
+
+  // User have to buy more than two
+  function enter(uint256 buyNumber) public payable {
+    require(msg.value > buyNumber * PRICE);
+    if (lotChances.length < 1) {
+      for (uint256 i = 0; i < buyNumber + 1; i++) {
+        lotChances.push(LotChance(payable(msg.sender), purchasedLotNumber));
+        purchasedLotNumber++;
+      }
+    } else {
+      for (uint256 i = 0; i < buyNumber; i++) {
+        lotChances.push(LotChance(payable(msg.sender), purchasedLotNumber));
+        purchasedLotNumber++;
+      }
+    }
   }
 
   function Keccahappyoooooo() public onlyOwner {
@@ -96,10 +114,10 @@ contract Lottery {
     payFirstWinner();
     // this is last movement to reset lottery
     lotteryHistory[lotteryId] = luckyPerson;
+    console.log("Kekkahappyoooo luckey person is === ", luckyPerson);
     // ここに関しての情報はデラックスにしたいからstructを組んで考えよう！
     lotteryId++;
-
-    // players = new address payable[](0);
+    delete lotChances;
   }
 
   function getLuckyPerson(uint256 lotteryIds)
@@ -120,6 +138,10 @@ contract Lottery {
       getRandomNumber(i);
       getUser(randomNumber);
       luckyPerson.transfer(prize);
+      console.log("THIRD PRIZE");
+      console.log("No.", i);
+      console.log("LuckyPerson", luckyPerson);
+      console.log("-------------------------------");
     }
   }
 
@@ -130,6 +152,10 @@ contract Lottery {
       getRandomNumber(i);
       getUser(randomNumber);
       luckyPerson.transfer(prize);
+      console.log("SECND PRIZE");
+      console.log("No.", i);
+      console.log("LuckyPerson", luckyPerson);
+      console.log("-------------------------------");
     }
   }
 
@@ -140,6 +166,10 @@ contract Lottery {
       getRandomNumber(i);
       getUser(randomNumber);
       luckyPerson.transfer(prize);
+      console.log("FIRST PRIZE");
+      console.log("No.", i);
+      console.log("LuckyPerson", luckyPerson);
+      console.log("-------------------------------");
     }
   }
 
