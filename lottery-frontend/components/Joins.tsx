@@ -38,8 +38,15 @@ export const Joins = () => {
 
     console.log(buy)
   }
+  const onStart = async () => {
+    const signer = lotContract.connect(library!.getSigner())
+    // const buy = await signer.enter(value * 0.01)
+    const start = await signer.lotStart()
+
+    console.log(start)
+  }
   return (
-    <Grid color='white' bg='#181B1E' mt='4' borderRadius='18' p={4} templateColumns='repeat(2, 1fr)' textAlign='center'>
+    <Grid color='white' bg='#181B1E' mt='4' borderRadius='18' p={4} templateColumns='repeat(3, 1fr)' textAlign='center'>
       <GridItem py={4} ml='8'>
         <Text fontSize='sm' py={2}>
           Buy the lot 0.01 Ether per 1 number
@@ -56,12 +63,14 @@ export const Joins = () => {
           </Button>
         </Center>
       </GridItem>
-      {/* <GridItem py={4}>
+      <GridItem py={4}>
         <Text fontSize='sm' py={2}>
-          <b> Admin only:</b> Pick Winner
+          <b> Admin only:</b> Lot Start
         </Text>
-        <Button colorScheme='teal'>Pick Winner</Button>
-      </GridItem> */}
+        <Button colorScheme='teal' onClick={onStart}>
+          Lot Start
+        </Button>
+      </GridItem>
       <GridItem py={4} mr='8'>
         <Text fontSize='sm' py={2}>
           <b> Admin only:</b> Pay Winner
