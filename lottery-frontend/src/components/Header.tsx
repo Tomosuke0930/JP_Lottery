@@ -3,23 +3,24 @@ import { ConnectWallet } from './ConnectWallet'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import { useEffect, useState } from 'react'
-import ABI from '../../abi.json'
+import { abi as contractAbi } from '../../abi.json'
 
 import { ethers } from 'ethers'
 // なんでだろう？　https://momentjs.com/
-import { moment } from 'moment'
+import moment from 'moment'
+// moment はメンテされない宣言されてる https://momentjs.com/docs/#/-project-status/
+// これ代わりに使いなよ、って公式が4つ候補出してて、その中の date-fns がいいっぽいので使いがち
 
 export const Header = () => {
   const [provider, setProvider] = useState<Web3Provider>()
   const [lotIds, setLotIds] = useState<number>(0)
   const [restTime, setRestTime] = useState<number>(0)
 
-  const { chainId, account, activate, active, library } = useWeb3React<Web3Provider>()
+  const { chainId, account, activate, active, library } = useWeb3React<Web3Provider>() // library が provider に相当する説（provider 用の useState いらんかも？）
 
   // // Ethers
 
   const contractAddr = '0x7EeB1cFDDf98AD6F6b05629850F7a4a6002C4C7b' // updated 17:50
-  const contractAbi = ABI.abi
   const lotContract = new ethers.Contract(contractAddr, contractAbi, provider)
 
   useEffect(() => {
@@ -37,8 +38,8 @@ export const Header = () => {
   }
   const getLotRestTime = async () => {
     const nowLotRestBlockTime = await lotContract.getLotRestTime()
-    const nowLotRestTime = await moment.unix(nowLotRestBlockTime)
-    setRestTime(nowLotRestTime)
+    const nowLotRestTime = moment.unix(nowLotRestBlockTime)
+    setRestTime(nowLotRestTime) // 型違う
   }
   return (
     <Box>

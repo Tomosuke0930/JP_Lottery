@@ -22,7 +22,7 @@ export const Histories = () => {
     let tempProvider = new ethers.providers.Web3Provider(window.ethereum)
     setProvider(tempProvider)
 
-    getPlayersNumber()
+    getPlayersNumber() // const で定義したものをそれより前で使えるんか怪しい。function は巻き取り的なのが起こって前でも使えるらしいが。
     getPotsNumbers()
     getLotIds()
   }, [active])
@@ -41,7 +41,7 @@ export const Histories = () => {
 
   const getLotIds = async () => {
     const nowLotIds = await lotContract.getLotteryId()
-    await setLotIds(parseInt(nowLotIds.toString()))
+    setLotIds(parseInt(nowLotIds.toString()))
     const nowLuckyPerson = await lotContract.getLuckyPerson(parseFloat(lotIds.toString()))
     console.log('nowLuckyPerson ===', nowLuckyPerson)
     setLuckyPerson(nowLuckyPerson)
@@ -56,12 +56,13 @@ export const Histories = () => {
           </Text>
           <Box>
             <Flex mt='4'>
-              <Box>{lotIds > 0 ? lotIds - 1 : <></>}</Box>
+              <Box>{lotIds > 0 ? lotIds - 1 : null}</Box>
               <Spacer />
               <Box> {shortenAddress(luckyPerson!.toString())}</Box>
             </Flex>
           </Box>
         </GridItem>
+
         <GridItem borderRadius='md' overflow='hidden' bg='#212429' p={4} textAlign='center'>
           <Text fontSize='2xl' fontWeight='bold'>
             Players
@@ -70,6 +71,7 @@ export const Histories = () => {
             {userNumber.toString()}
           </Text>
         </GridItem>
+
         <GridItem borderRadius='md' overflow='hidden' bg='#212429' p={4}>
           <Text fontSize='2xl' fontWeight='bold'>
             Total Lot
