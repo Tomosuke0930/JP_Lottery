@@ -30,15 +30,15 @@ contract LotteryTMT {
   uint256 public constant PRICE = 1;
 
   // Other Vars
-  address public jp_bank;
+  address payable public jp_bank;
   address payable[] public players;
   uint256 public lotteryId = 1;
   uint256 public purchasedLotNumber;
 
   mapping(uint256 => address payable) public lotteryHistory;
 
-  constructor() {
-    jp_bank = msg.sender;
+  constructor() payable {
+    jp_bank = payable(msg.sender);
   }
 
   // get user info of winner in the lottery

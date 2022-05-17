@@ -9,6 +9,13 @@ export const theme = extendTheme({
       lightest: '#EDF2F7', // gray.100
     },
   },
+  styles: {
+    global: {
+      body: {
+        backgroundColor: '#25242A',
+      },
+    },
+  },
   components: {
     // ボタン・リンクのクリック後に青枠がつくのを無効化
     Button: { baseStyle: { _focus: { boxShadow: 'none' } } },
