@@ -9,18 +9,15 @@ export const ConnectWallet = () => {
   const injectedConnector = new InjectedConnector({
     supportedChainIds: [1, 3, 4, 5, 42],
   })
-  const { chainId, account, activate, active, library } =
-    useWeb3React<Web3Provider>()
+  const { chainId, account, activate, active, library } = useWeb3React<Web3Provider>()
   const onClick = () => {
     activate(injectedConnector)
   }
 
-  useEffect(() => {
-    console.log(chainId, account, active, library)
-  })
+  useEffect(() => {})
 
   return (
-    <div>
+    <Box color='white'>
       {/* <div>ChainId: {chainId}</div> */}
       {chainId != 4 && <>Change Network to Rinkeby</>}
       {/* <div>Account: {account}</div> */}
@@ -33,6 +30,6 @@ export const ConnectWallet = () => {
           Connect Connect
         </Button>
       )}
-    </div>
+    </Box>
   )
 }
