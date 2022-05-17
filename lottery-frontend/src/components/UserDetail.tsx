@@ -12,7 +12,7 @@ export const UserDetail = () => {
   const [provider, setProvider] = useState<Web3Provider>()
   const [userNum, setUserNum] = useState([0])
   // Ethers
-  const contractAddr = '0xf338801BB41B73b23b6A0e1Ee8016d6c7122A881' // updated 17:50
+  const contractAddr = '0x7EeB1cFDDf98AD6F6b05629850F7a4a6002C4C7b' // updated 17:50
   const contractAbi = ABI.abi
   const lotContract = new ethers.Contract(contractAddr, contractAbi, provider)
 
@@ -38,9 +38,9 @@ export const UserDetail = () => {
   }
 
   return (
-    <Grid color='white' bg='#181B1E' mt='4' borderRadius='18' p={4} templateColumns='repeat(2, 1fr)' gap={4} textAlign='center'>
-      <GridItem py={4} colSpan={1}>
-        <Text fontSize='sm' py={2}>
+    <Grid color='white' bg='#181B1E' mt='4' borderRadius='18' p='4' templateColumns='repeat(2, 1fr)' gap={4} textAlign='center'>
+      <GridItem py='4' colSpan={1}>
+        <Text fontSize='sm' py='2'>
           You can check your bought Number from here👇
         </Text>
         <Center>
@@ -49,8 +49,8 @@ export const UserDetail = () => {
           </Button>
         </Center>
       </GridItem>
-      <GridItem py={4} colSpan={1}>
-        <Text fontSize='sm' py={2}>
+      <GridItem py='4' colSpan={1}>
+        <Text fontSize='sm' py='2'>
           <b> Your Bought Number</b>
         </Text>
         <Box>{userNum}</Box>

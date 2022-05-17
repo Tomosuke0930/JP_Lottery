@@ -6,14 +6,13 @@ import ABI from '../../abi.json'
 
 import { ethers } from 'ethers'
 export const Joins = () => {
-  const { chainId, account, activate, active, library } = useWeb3React<Web3Provider>()
+  const { active, library } = useWeb3React<Web3Provider>()
   const [provider, setProvider] = useState<Web3Provider>()
   const [value, setValue] = useState<number>(0)
   const handleChange = (event: any) => setValue(event.target.value)
-  // const [signer, setSigner] = useState({})
 
   // Ethers
-  const contractAddr = '0xf338801BB41B73b23b6A0e1Ee8016d6c7122A881' // updated 17:50
+  const contractAddr = '0x7EeB1cFDDf98AD6F6b05629850F7a4a6002C4C7b'
   const contractAbi = ABI.abi
   const lotContract = new ethers.Contract(contractAddr, contractAbi, provider)
 
@@ -27,29 +26,25 @@ export const Joins = () => {
 
   const onPayWinner = async () => {
     const signer = lotContract.connect(library!.getSigner())
-    // ここでエラーだったのはuseEffectで更新された時に、providerないじゃねえかよとなったから！！！
     const paywinner = await signer.Keccahappyoooooo()
     console.log(paywinner)
   }
 
   const onBuy = async () => {
     const signer = lotContract.connect(library!.getSigner())
-    // const buy = await signer.enter(value * 0.01)
     const buy = await signer.enter(value, { value: ethers.utils.parseUnits((value * 0.01).toString(), 'ether') })
-
     console.log(buy)
   }
   const onStart = async () => {
     const signer = lotContract.connect(library!.getSigner())
-    // const buy = await signer.enter(value * 0.01)
     const start = await signer.lotStart()
 
     console.log(start)
   }
   return (
-    <Grid color='white' bg='#181B1E' mt='4' borderRadius='18' p={4} templateColumns='repeat(3, 1fr)' textAlign='center'>
-      <GridItem py={4} ml='8'>
-        <Text fontSize='sm' py={2}>
+    <Grid color='white' bg='#181B1E' mt='4' borderRadius='18' p='4' templateColumns='repeat(3, 1fr)' textAlign='center'>
+      <GridItem py='4' ml='8'>
+        <Text fontSize='sm' py='2'>
           Buy the lot 0.01 Ether per 1 number
         </Text>
         <Center>
@@ -64,16 +59,16 @@ export const Joins = () => {
           </Button>
         </Center>
       </GridItem>
-      <GridItem py={4}>
-        <Text fontSize='sm' py={2}>
+      <GridItem py='4'>
+        <Text fontSize='sm' py='2'>
           <b> Admin only:</b> Lot Start
         </Text>
         <Button colorScheme='teal' onClick={onStart}>
           Lot Start
         </Button>
       </GridItem>
-      <GridItem py={4} mr='8'>
-        <Text fontSize='sm' py={2}>
+      <GridItem py='4' mr='8'>
+        <Text fontSize='sm' py='2'>
           <b> Admin only:</b> Pay Winner
         </Text>
         <Button colorScheme='green' onClick={onPayWinner}>

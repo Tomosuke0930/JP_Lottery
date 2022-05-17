@@ -14,7 +14,7 @@ export const Histories = () => {
   const [luckyPerson, setLuckyPerson] = useState('')
   const { active } = useWeb3React<Web3Provider>()
 
-  const contractAddr = '0xf338801BB41B73b23b6A0e1Ee8016d6c7122A881' // updated 17:50
+  const contractAddr = '0x7EeB1cFDDf98AD6F6b05629850F7a4a6002C4C7b' // updated 17:50
   const contractAbi = ABI.abi
   const lotContract = new ethers.Contract(contractAddr, contractAbi, provider)
 
@@ -28,7 +28,6 @@ export const Histories = () => {
   }, [active])
 
   const getPlayersNumber = async () => {
-    // const signer = lotContract.connect(library?.getSigner())
     const nowNumber = await lotContract.getPlayersLength()
     setUserNumber(nowNumber)
     console.log('userNumber ===', userNumber.toString())
@@ -42,20 +41,11 @@ export const Histories = () => {
 
   const getLotIds = async () => {
     const nowLotIds = await lotContract.getLotteryId()
-    //ここで現状のlotIdを得ている
-    console.log('nowLotIds1 ===', nowLotIds)
-    console.log('nowLotIds2 ===', nowLotIds.toString())
-    console.log('nowLotIds3 ===', parseInt(nowLotIds.toString()))
     await setLotIds(parseInt(nowLotIds.toString()))
-    // console.log('lotIds[Histories] ===', lotIds.toString())
-    // console.log('lotIds[Header in Histories] ===', lotIds.toString())
-    // setLastLotId(parseFloat(lotIds.toString()) - 1)
     const nowLuckyPerson = await lotContract.getLuckyPerson(parseFloat(lotIds.toString()))
     console.log('nowLuckyPerson ===', nowLuckyPerson)
     setLuckyPerson(nowLuckyPerson)
   }
-
-  //ここでlotIdsが0>だったらみたいな感じで条件分岐してもいいかもね
 
   return (
     <div>
@@ -70,21 +60,6 @@ export const Histories = () => {
               <Spacer />
               <Box> {shortenAddress(luckyPerson!.toString())}</Box>
             </Flex>
-            {/* <Flex>
-              <Box># 1043</Box>
-              <Spacer />
-              <Box>0x792...3F</Box>
-            </Flex>
-            <Flex>
-              <Box># 1042</Box>
-              <Spacer />
-              <Box>0x792...3F</Box>
-            </Flex> */}
-            {/* <Flex>
-              <Link href='https://twitter.com/manabubannai' isExternal color='blue.500'>
-                <Text fontSize='sm'>» See more</Text>
-              </Link>
-            </Flex> */}
           </Box>
         </GridItem>
         <GridItem borderRadius='md' overflow='hidden' bg='#212429' p={4} textAlign='center'>
