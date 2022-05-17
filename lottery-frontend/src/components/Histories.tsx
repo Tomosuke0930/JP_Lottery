@@ -2,7 +2,7 @@ import { Box, Flex, Grid, GridItem, Spacer, Text, Link, Center } from '@chakra-u
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import { useEffect, useState } from 'react'
-import ABI from '../abi.json'
+import ABI from '../../abi.json'
 import { ethers } from 'ethers'
 import { shortenAddress } from '../lib'
 
@@ -12,8 +12,7 @@ export const Histories = () => {
   const [lotIds, setLotIds] = useState<number>(0)
   const [provider, setProvider] = useState<Web3Provider>()
   const [luckyPerson, setLuckyPerson] = useState('')
-  const [lastLotId, setLastLotId] = useState(0)
-  const { chainId, account, activate, active, library } = useWeb3React<Web3Provider>()
+  const { active } = useWeb3React<Web3Provider>()
 
   const contractAddr = '0xf338801BB41B73b23b6A0e1Ee8016d6c7122A881' // updated 17:50
   const contractAbi = ABI.abi
@@ -25,14 +24,7 @@ export const Histories = () => {
 
     getPlayersNumber()
     getPotsNumbers()
-    getLotIds() // ここが問題だった
-
-    /**
-     * getPlayersNumber done!
-     * getBoughtNumber
-     * getHistory
-     * getLotTimetoCalRestTime
-     */
+    getLotIds()
   }, [active])
 
   const getPlayersNumber = async () => {

@@ -3,7 +3,8 @@ import { ConnectWallet } from './ConnectWallet'
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import { useEffect, useState } from 'react'
-import ABI from '../abi.json'
+import ABI from '../../abi.json'
+
 import { ethers } from 'ethers'
 // import { moment } from 'moment'
 

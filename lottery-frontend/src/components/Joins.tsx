@@ -2,7 +2,8 @@ import { Box, Button, Center, Flex, Grid, GridItem, Input, Text } from '@chakra-
 import { useWeb3React } from '@web3-react/core'
 import { Web3Provider } from '@ethersproject/providers'
 import { useEffect, useState } from 'react'
-import ABI from '../abi.json'
+import ABI from '../../abi.json'
+
 import { ethers } from 'ethers'
 export const Joins = () => {
   const { chainId, account, activate, active, library } = useWeb3React<Web3Provider>()
