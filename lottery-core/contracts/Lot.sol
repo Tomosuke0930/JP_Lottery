@@ -5,6 +5,8 @@ import "hardhat/console.sol";
 
 contract LotteryTMT {
   // Lot Info
+  // Total = 33 * 1 + 3 * 3 + 1 * 5 = 47
+  // 後で時間を設定する！どれくらいなのか？みたいな！
   uint256 public constant FIRSTPrizeRatio = 33;
   uint256 public constant FIRSTNumber = 1;
   uint256 public constant SECONDPrizeRatio = 3;
@@ -34,6 +36,8 @@ contract LotteryTMT {
   address payable[] public players;
   uint256 public lotteryId = 1;
   uint256 public purchasedLotNumber;
+  bool public lotStarted;
+  uint256 public lotTime;
 
   mapping(uint256 => address payable) public lotteryHistory;
 
@@ -54,12 +58,16 @@ contract LotteryTMT {
     return address(this).balance;
   }
 
-  function getPlayers() public view returns (address payable[] memory) {
-    return players;
+  function getPlayersLength() public view returns (uint256) {
+    return players.length;
   }
 
   function getUser(uint256 ids) internal {
     luckyPerson = payable(lotChances[ids].userAddress);
+  }
+
+  function getLotteryId() public view returns (uint256) {
+    return lotteryId;
   }
 
   function getRandomNumber(uint256 i) internal {
@@ -91,9 +99,18 @@ contract LotteryTMT {
     return lotChances.length;
   }
 
+  function lotStart() public onlyOwner {
+    lotStarted = true;
+    lotTime = block.timestamp;
+  }
+
   // User have to buy more than two
   function enter(uint256 buyNumber) public payable {
     require(msg.value > buyNumber * PRICE);
+    require(
+      lotStarted != false,
+      "Lot have been not started yet. Please let me know by Twitter"
+    );
     if (lotChances.length < 1) {
       for (uint256 i = 0; i < buyNumber + 1; i++) {
         lotChances.push(LotChance(payable(msg.sender), purchasedLotNumber));
@@ -109,6 +126,7 @@ contract LotteryTMT {
 
   function Keccahappyoooooo() public onlyOwner {
     require(lotChances.length > 9, "Lack of participants...");
+    require(block.timestamp - lotTime > 1 days, "Insufficient Time");
     payTHREEWinner();
     paySecondWinner();
     payFirstWinner();
@@ -118,6 +136,21 @@ contract LotteryTMT {
     // ここに関しての情報はデラックスにしたいからstructを組んで考えよう！
     lotteryId++;
     delete lotChances;
+    jp_bank.transfer(address(this).balance);
+    lotStarted = false;
+  }
+
+  function getLotTime() public view returns (uint256) {
+    require(lotTime > 0 && lotStarted == true, "akande!!!");
+    return lotTime;
+  }
+
+  //　こんとらくとは一旦保留にする！とってくるとかの確認は後ででいい！増えすぎる！
+  // add
+  function getLotRestTime() public view returns (uint256) {
+    require(lotTime > 0 && lotStarted == true, "akande!!!");
+    require(block.timestamp - lotTime < 1 days, "Already finished!");
+    return (block.timestamp - lotTime);
   }
 
   function getLuckyPerson(uint256 lotteryIds)
