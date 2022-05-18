@@ -7,81 +7,90 @@ contract LotteryTMT {
   // Lot Info
   // Total = 33 * 1 + 3 * 3 + 1 * 5 = 47
   // 後で時間を設定する！どれくらいなのか？みたいな！
-  uint256 public constant FIRSTPrizeRatio = 33;
-  uint256 public constant FIRSTNumber = 1;
-  uint256 public constant SECONDPrizeRatio = 3;
-  uint256 public constant SECONDNumber = 3;
-  uint256 public constant THIRDPrizeRatio = 1;
-  uint256 public constant THIRDNumber = 5;
+  uint8 public constant FIRSTPrizeRatio = 33;
+  uint8 public constant FIRSTNumber = 1;
+  uint8 public constant SECONDPrizeRatio = 3;
+  uint8 public constant SECONDNumber = 3;
+  uint8 public constant THIRDPrizeRatio = 1;
+  uint8 public constant THIRDNumber = 5;
+
+  // Lot Join Fee
+  uint8 public constant PRICE = 1;
+  uint8 public lotteryId = 1; // 8 * 8 = 64
+
+  uint64 public randomNumber;
+  uint64 public lotTime;
+  uint64 public purchasedLotNumber; // 64 * 3 = 192 >>  64 + 192 = 256 >> 0 slot
+
+  // Other Vars
+  address payable luckyPerson;
+  address payable public jp_bank;
+  uint32[] public lotNumbers;
+  LotChance[] public lotChances;
+  address payable[] public players;
+
+  bool public lotStarted; //ここもoptimizeできるよ！
 
   // Lot Structs
   struct LotChance {
     address payable userAddress;
-    uint256 ids;
+    uint32 ids;
   }
 
-  // i have to create lottery struct >> first buyer, and PRICE...
-  // lotchances.length == 0 , >> add 1 !!!
-
-  LotChance[] public lotChances;
-  uint256 public randomNumber;
-  address payable luckyPerson;
-  uint256[] public lotNumbers;
-
-  // Lot Join Fee
-  uint256 public constant PRICE = 1;
-
-  // Other Vars
-  address payable public jp_bank;
-  address payable[] public players;
-  uint256 public lotteryId = 1;
-  uint256 public purchasedLotNumber;
-  bool public lotStarted;
-  uint256 public lotTime;
-
-  mapping(uint256 => address payable) public lotteryHistory;
+  mapping(uint32 => address payable) public lotteryHistory;
 
   constructor() payable {
     jp_bank = payable(msg.sender);
   }
 
-  // get user info of winner in the lottery
-  function getWinnerByLottery(uint256 lottery)
+  //　こんとらくとは一旦保留にする！とってくるとかの確認は後ででいい！増えすぎる！
+  // add
+  function getLotRestTime() public view returns (uint256) {
+    require(lotTime > 0 && lotStarted == true, "akande!!!");
+    require(block.timestamp - lotTime < 1 days, "Already finished!");
+    block.timestamp - lotTime;
+  }
+
+  function getLuckyPerson(uint256 lotteryIds)
     public
     view
     returns (address payable)
   {
-    return lotteryHistory[lottery];
+    lotteryHistory[lotteryIds];
   }
 
   function getBalance() public view returns (uint256) {
-    return address(this).balance;
+    address(this).balance;
   }
 
   function getPlayersLength() public view returns (uint256) {
-    return players.length;
+    players.length;
   }
 
-  function getUser(uint256 ids) internal {
+  function getUser(uint256 ids) internal view returns (address) {
     luckyPerson = payable(lotChances[ids].userAddress);
   }
 
   function getLotteryId() public view returns (uint256) {
-    return lotteryId;
+    lotteryId;
+  }
+
+  function getLotChancesLength() public view returns (uint256) {
+    lotChances.length;
   }
 
   function getRandomNumber(uint256 i) internal {
+    uint256 _randomNumber = createRandomNumber(i);
+    if (_randomNumber == 0) getRandomNumber(i);
+    console.log("RandomNumber is === ", _randomNumber);
+  }
+
+  function createRandomNumber(uint256 i) internal returns (uint256) {
     randomNumber =
       uint256(
         keccak256(abi.encodePacked(block.difficulty, block.timestamp, i))
       ) %
       lotChances.length;
-    if (randomNumber == 0) {
-      // if get 0, user has all 0, so it is difficult ....
-      // if, this user is first buyer, you have to push more 1 lottery
-      getRandomNumber(i);
-    }
-    console.log("RandomNumber is === ", randomNumber);
   }
 
   function getPurchasedNumber() public view returns (uint256[] memory l) {
@@ -94,10 +103,6 @@ contract LotteryTMT {
   }
 
   // this is test
-
-  function getLotChancesLength() public view returns (uint256) {
-    return lotChances.length;
-  }
 
   function lotStart() public onlyOwner {
     lotStarted = true;
@@ -142,23 +147,7 @@ contract LotteryTMT {
 
   function getLotTime() public view returns (uint256) {
     require(lotTime > 0 && lotStarted == true, "akande!!!");
-    return lotTime;
-  }
-
-  //　こんとらくとは一旦保留にする！とってくるとかの確認は後ででいい！増えすぎる！
-  // add
-  function getLotRestTime() public view returns (uint256) {
-    require(lotTime > 0 && lotStarted == true, "akande!!!");
-    require(block.timestamp - lotTime < 1 days, "Already finished!");
-    return (block.timestamp - lotTime);
-  }
-
-  function getLuckyPerson(uint256 lotteryIds)
-    public
-    view
-    returns (address payable)
-  {
-    return lotteryHistory[lotteryIds];
+    lotTime;
   }
 
   function payTHREEWinner() internal {
@@ -169,7 +158,8 @@ contract LotteryTMT {
 
     for (uint256 i = 0; i < THIRDNumber; i++) {
       getRandomNumber(i);
-      getUser(randomNumber);
+      uint256 _randomNumber = randomNumber;
+      getUser(_randomNumber);
       luckyPerson.transfer(prize);
       console.log("THIRD PRIZE");
       console.log("No.", i);
@@ -183,7 +173,8 @@ contract LotteryTMT {
 
     for (uint256 i = 0; i < SECONDNumber; i++) {
       getRandomNumber(i);
-      getUser(randomNumber);
+      uint256 _randomNumber = randomNumber;
+      getUser(_randomNumber);
       luckyPerson.transfer(prize);
       console.log("SECND PRIZE");
       console.log("No.", i);
@@ -197,7 +188,8 @@ contract LotteryTMT {
 
     for (uint256 i = 0; i < FIRSTNumber; i++) {
       getRandomNumber(i);
-      getUser(randomNumber);
+      uint256 _randomNumber = randomNumber;
+      getUser(_randomNumber);
       luckyPerson.transfer(prize);
       console.log("FIRST PRIZE");
       console.log("No.", i);
