@@ -14,7 +14,7 @@ export const Joins = () => {
   // Ethers
   const contractAddr = '0x7EeB1cFDDf98AD6F6b05629850F7a4a6002C4C7b'
   const contractAbi = ABI.abi
-  const lotContract = new ethers.Contract(contractAddr, contractAbi, provider)
+  const lotContract = new ethers.Contract(contractAddr, contractAbi, provider) // provider の代わりにここで signer 入れとけんかね
 
   useEffect(() => {
     let tempProvider = new ethers.providers.Web3Provider(window.ethereum)

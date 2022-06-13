@@ -28,7 +28,7 @@ export const UserDetail = () => {
   }
 
   const cutZero = async (nums: CheckNums) => {
-    let userNums: CheckNums = new Array()
+    let userNums: CheckNums = []
     for (let i = 0; i < nums.length; i++) {
       if (i != 0) {
         userNums.push(i)
