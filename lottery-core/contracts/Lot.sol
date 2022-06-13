@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.13;
+pragma solidity 0.8.14;
 
 import "hardhat/console.sol";
 
@@ -45,47 +45,47 @@ contract LotteryTMT {
 
   //　こんとらくとは一旦保留にする！とってくるとかの確認は後ででいい！増えすぎる！
   // add
-  function getLotRestTime() public view returns (uint256) {
+  function getLotRestTime() external view returns (uint256) {
     require(lotTime > 0 && lotStarted == true, "akande!!!");
     require(block.timestamp - lotTime < 1 days, "Already finished!");
     block.timestamp - lotTime;
   }
 
   function getLuckyPerson(uint256 lotteryIds)
-    public
+    external
     view
     returns (address payable)
   {
     lotteryHistory[lotteryIds];
   }
 
-  function getBalance() public view returns (uint256) {
+  function getBalance() external view returns (uint256) {
     address(this).balance;
   }
 
-  function getPlayersLength() public view returns (uint256) {
+  function getPlayersLength() external view returns (uint256) {
     players.length;
   }
 
-  function getUser(uint256 ids) internal view returns (address) {
+  function getUser(uint256 ids) external view returns (address) {
     luckyPerson = payable(lotChances[ids].userAddress);
   }
 
-  function getLotteryId() public view returns (uint256) {
+  function getLotteryId() external view returns (uint256) {
     lotteryId;
   }
 
-  function getLotChancesLength() public view returns (uint256) {
+  function getLotChancesLength() external view returns (uint256) {
     lotChances.length;
   }
 
-  function getRandomNumber(uint256 i) internal {
+  function getRandomNumber(uint256 i) private {
     uint256 _randomNumber = createRandomNumber(i);
     if (_randomNumber == 0) getRandomNumber(i);
     console.log("RandomNumber is === ", _randomNumber);
   }
 
-  function createRandomNumber(uint256 i) internal returns (uint256) {
+  function createRandomNumber(uint256 i) private returns (uint256) {
     randomNumber =
       uint256(
         keccak256(abi.encodePacked(block.difficulty, block.timestamp, i))
@@ -93,7 +93,7 @@ contract LotteryTMT {
       lotChances.length;
   }
 
-  function getPurchasedNumber() public view returns (uint256[] memory l) {
+  function getPurchasedNumber() external view returns (uint256[] memory l) {
     l = new uint256[](purchasedLotNumber);
     for (uint256 i = 0; i < purchasedLotNumber; i++) {
       if (msg.sender == lotChances[i].userAddress) {
@@ -104,13 +104,13 @@ contract LotteryTMT {
 
   // this is test
 
-  function lotStart() public onlyOwner {
+  function lotStart() external onlyOwner {
     lotStarted = true;
     lotTime = block.timestamp;
   }
 
   // User have to buy more than two
-  function enter(uint256 buyNumber) public payable {
+  function enter(uint256 buyNumber) external payable {
     require(msg.value > buyNumber * PRICE);
     require(
       lotStarted != false,
@@ -129,7 +129,7 @@ contract LotteryTMT {
     }
   }
 
-  function Keccahappyoooooo() public onlyOwner {
+  function Keccahappyoooooo() external onlyOwner {
     require(lotChances.length > 9, "Lack of participants...");
     require(block.timestamp - lotTime > 1 days, "Insufficient Time");
     payTHREEWinner();
@@ -145,12 +145,12 @@ contract LotteryTMT {
     lotStarted = false;
   }
 
-  function getLotTime() public view returns (uint256) {
+  function getLotTime() external view returns (uint256) {
     require(lotTime > 0 && lotStarted == true, "akande!!!");
     lotTime;
   }
 
-  function payTHREEWinner() internal {
+  function payTHREEWinner() private {
     // 1: getRandomNumber >> Do not allow duplicates >> global を更新するでも最終的にplayerの番号
     // > そのクジを弾く必要があるのか？いらない気がする！
     // 2: getUser from randomNumber
@@ -168,7 +168,7 @@ contract LotteryTMT {
     }
   }
 
-  function paySecondWinner() internal {
+  function paySecondWinner() private {
     uint256 prize = (address(this).balance * SECONDPrizeRatio) / 100;
 
     for (uint256 i = 0; i < SECONDNumber; i++) {
@@ -183,7 +183,7 @@ contract LotteryTMT {
     }
   }
 
-  function payFirstWinner() internal {
+  function payFirstWinner() private {
     uint256 prize = (address(this).balance * FIRSTPrizeRatio) / 100;
 
     for (uint256 i = 0; i < FIRSTNumber; i++) {
